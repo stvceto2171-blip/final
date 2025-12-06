@@ -16,27 +16,25 @@ import {
 } from '@ionic/react';
 import './Tab3.css';
 
-// 1. Define the Interface based on the "Team" JSON structure
 interface Team {
   id: number;
   title: {
     rendered: string;
   };
-  // We use the 'acf' object to access the custom fields
-  acf: {
-    records: string;
-    statistics: string;
-    past_performances: string;
-    big_plays: string;
-  };
+  // Update: Allow acf to be 'any' or check for optional properties
+  // This prevents TypeScript from complaining if ACF is sometimes an empty array
+  acf?: {
+    records?: string;
+    statistics?: string;
+    past_performances?: string;
+    big_plays?: string;
+  } | any; 
 }
 
 const Tab3: React.FC = () => {
-  // 2. State for storing the list of teams
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // 3. Fetch data from the Team endpoint
   useEffect(() => {
     const fetchTeams = async () => {
       try {
@@ -68,16 +66,15 @@ const Tab3: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        {/* Loading Indicator */}
         <IonLoading isOpen={loading} message="Loading Teams..." />
 
         <div className="container">
-          {/* 4. Map through the teams */}
           {teams.map((team) => (
             <IonCard key={team.id}>
               <IonCardHeader>
                 <IonCardTitle>
-                  {team.title.rendered}
+                  {/* Safely render title, check if it exists */}
+                  {team.title?.rendered}
                 </IonCardTitle>
               </IonCardHeader>
 
@@ -87,28 +84,29 @@ const Tab3: React.FC = () => {
                   <IonItem>
                     <IonLabel>
                       <h2>Team Records</h2>
-                      <p>{team.acf.records}</p>
+                      {/* USE ?. HERE - This prevents the crash */}
+                      <p>{team.acf?.records || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
                   <IonItem>
                     <IonLabel>
                       <h2>Statistics</h2>
-                      <p>{team.acf.statistics}</p>
+                      <p>{team.acf?.statistics || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
                   <IonItem>
                     <IonLabel>
                       <h2>Big Plays</h2>
-                      <p>{team.acf.big_plays}</p>
+                      <p>{team.acf?.big_plays || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
                   <IonItem>
                     <IonLabel>
                       <h2>Performance</h2>
-                      <p>{team.acf.past_performances}</p>
+                      <p>{team.acf?.past_performances || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
