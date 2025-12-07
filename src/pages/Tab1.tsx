@@ -14,113 +14,112 @@ import {
   IonLabel,
   IonLoading
 } from '@ionic/react';
-import './Tab1.css'; // or your specific page css
+import './Tab1.css'; 
 
-// Interface matches your JSON structure
-interface Player {
+// 1. CORRECTED INTERFACE for Sport data
+interface SportItem {
   id: number;
   title: {
     rendered: string;
   };
-  acf: {
-    records: string;
-    statistics: string;
-    past_performances: string;
-    big_plays: string;
-  };
+  // Using optional chaining safety
+  acf?: {
+    sport?: string;
+    team?: string;
+    player?: string;
+    comment?: string;
+  } | any; 
 }
 
-const PlayerList: React.FC = () => {
-  // State to store the players
-  const [players, setPlayers] = useState<Player[]>([]);
-  // State to manage loading status
+// Renamed component for clarity, though "Tab1" would also work if that's your file name
+const SportList: React.FC = () => {
+  const [sportItems, setSportItems] = useState<SportItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Fetch data when component mounts
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const fetchSportItems = async () => {
       try {
-        const response = await fetch('https://dev-cs55nflteams.pantheonsite.io/wp-json/wp/v2/players');
+        // 2. CORRECTED ENDPOINT URL
+        const response = await fetch('https://dev-cs55nflteams.pantheonsite.io/wp-json/wp/v2/sport');
         const data = await response.json();
-        setPlayers(data);
+        setSportItems(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching players:', error);
+        console.error('Error fetching sport items:', error);
         setLoading(false);
       }
     };
 
-    fetchPlayers();
+    fetchSportItems();
   }, []);
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>NFL Players</IonTitle>
+          <IonTitle>Sport Details</IonTitle>
         </IonToolbar>
       </IonHeader>
-      
+
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">NFL Players</IonTitle>
+            <IonTitle size="large">Sport Details</IonTitle>
           </IonToolbar>
         </IonHeader>
 
-        {/* Show a loading spinner while fetching */}
-        <IonLoading isOpen={loading} message="Scouting players..." />
+        <IonLoading isOpen={loading} message="Loading Sport Data..." />
 
         <div className="container">
-            {/* Map through the player data */}
-            {players.map((player) => (
-              <IonCard key={player.id}>
-                <IonCardHeader>
-                  <IonCardTitle>
-                    {/* Capitalize name as it comes in lowercase */}
-                    {player.title.rendered.toUpperCase()}
-                  </IonCardTitle>
-                </IonCardHeader>
+          {/* 3. CORRECTED JSX MAPPING */}
+          {sportItems.map((item) => (
+            <IonCard key={item.id}>
+              <IonCardHeader>
+                <IonCardTitle>
+                  {item.title?.rendered}
+                </IonCardTitle>
+              </IonCardHeader>
 
-                <IonCardContent>
-                  <IonList lines="none">
-                    
-                    <IonItem>
-                      <IonLabel>
-                        <h2>Statistics</h2>
-                        <p>{player.acf.statistics}</p>
-                      </IonLabel>
-                    </IonItem>
+              <IonCardContent>
+                <IonList lines="none">
+                  
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Sport Type</h2>
+                      {/* Using Optional Chaining for safe access */}
+                      <p>{item.acf?.sport || 'N/A'}</p> 
+                    </IonLabel>
+                  </IonItem>
 
-                    <IonItem>
-                      <IonLabel>
-                        <h2>Records</h2>
-                        <p>{player.acf.records}</p>
-                      </IonLabel>
-                    </IonItem>
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Team Name</h2>
+                      <p>{item.acf?.team || 'N/A'}</p>
+                    </IonLabel>
+                  </IonItem>
 
-                    <IonItem>
-                      <IonLabel>
-                        <h2>Big Plays</h2>
-                        <p>{player.acf.big_plays}</p>
-                      </IonLabel>
-                    </IonItem>
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Player Position</h2>
+                      <p>{item.acf?.player || 'N/A'}</p>
+                    </IonLabel>
+                  </IonItem>
 
-                    <IonItem>
-                      <IonLabel>
-                        <h2>Past Performance</h2>
-                        <p>{player.acf.past_performances}</p>
-                      </IonLabel>
-                    </IonItem>
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Commentary</h2>
+                      <p>{item.acf?.comment || 'N/A'}</p>
+                    </IonLabel>
+                  </IonItem>
 
-                  </IonList>
-                </IonCardContent>
-              </IonCard>
-            ))}
+                </IonList>
+              </IonCardContent>
+            </IonCard>
+          ))}
         </div>
       </IonContent>
     </IonPage>
   );
 };
 
-export default PlayerList;
+export default SportList;

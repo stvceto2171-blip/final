@@ -16,65 +16,69 @@ import {
 } from '@ionic/react';
 import './Tab3.css';
 
-interface Team {
+// 1. UPDATED INTERFACE to match the new ACF fields (deporte, equipo, jugador, comentario)
+interface DeporteItem {
   id: number;
   title: {
     rendered: string;
   };
-  // Update: Allow acf to be 'any' or check for optional properties
-  // This prevents TypeScript from complaining if ACF is sometimes an empty array
+  // Allow acf to be optional/any to handle empty ACF data safely
   acf?: {
-    records?: string;
-    statistics?: string;
-    past_performances?: string;
-    big_plays?: string;
+    deporte?: string;
+    equipo?: string;
+    jugador?: string;
+    comentario?: string;
   } | any; 
 }
 
 const Tab3: React.FC = () => {
-  const [teams, setTeams] = useState<Team[]>([]);
+  // Use the new interface for state
+  const [deporteItems, setDeporteItems] = useState<DeporteItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchTeams = async () => {
+    const fetchDeporteItems = async () => {
       try {
-        const response = await fetch('https://dev-cs55nflteams.pantheonsite.io/wp-json/wp/v2/team');
+        // 2. UPDATED ENDPOINT URL
+        const response = await fetch('https://dev-cs55nflteams.pantheonsite.io/wp-json/wp/v2/deporte');
         const data = await response.json();
-        setTeams(data);
+        // Set the state with the new data
+        setDeporteItems(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching teams:', error);
+        console.error('Error fetching deporte items:', error);
         setLoading(false);
       }
     };
 
-    fetchTeams();
+    fetchDeporteItems();
   }, []);
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>NFL Teams</IonTitle>
+          <IonTitle>Deporte Information</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">NFL Teams</IonTitle>
+            <IonTitle size="large">Deporte Information</IonTitle>
           </IonToolbar>
         </IonHeader>
 
-        <IonLoading isOpen={loading} message="Loading Teams..." />
+        <IonLoading isOpen={loading} message="Loading Deporte Data..." />
 
         <div className="container">
-          {teams.map((team) => (
-            <IonCard key={team.id}>
+          {/* 3. UPDATED JSX MAPPING */}
+          {deporteItems.map((item) => (
+            <IonCard key={item.id}>
               <IonCardHeader>
                 <IonCardTitle>
-                  {/* Safely render title, check if it exists */}
-                  {team.title?.rendered}
+                  {/* Title of the Post (e.g., nfl football) */}
+                  {item.title?.rendered}
                 </IonCardTitle>
               </IonCardHeader>
 
@@ -83,30 +87,33 @@ const Tab3: React.FC = () => {
                   
                   <IonItem>
                     <IonLabel>
-                      <h2>Team Records</h2>
-                      {/* USE ?. HERE - This prevents the crash */}
-                      <p>{team.acf?.records || 'N/A'}</p>
+                      <h2>Deporte (Sport)</h2>
+                      {/* Using the new ACF field name 'deporte' */}
+                      <p>{item.acf?.deporte || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
                   <IonItem>
                     <IonLabel>
-                      <h2>Statistics</h2>
-                      <p>{team.acf?.statistics || 'N/A'}</p>
+                      <h2>Equipo (Team)</h2>
+                      {/* Using the new ACF field name 'equipo' */}
+                      <p>{item.acf?.equipo || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
                   <IonItem>
                     <IonLabel>
-                      <h2>Big Plays</h2>
-                      <p>{team.acf?.big_plays || 'N/A'}</p>
+                      <h2>Jugador (Player)</h2>
+                      {/* Using the new ACF field name 'jugador' */}
+                      <p>{item.acf?.jugador || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
                   <IonItem>
                     <IonLabel>
-                      <h2>Performance</h2>
-                      <p>{team.acf?.past_performances || 'N/A'}</p>
+                      <h2>Comentario (Comment)</h2>
+                      {/* Using the new ACF field name 'comentario' */}
+                      <p>{item.acf?.comentario || 'N/A'}</p>
                     </IonLabel>
                   </IonItem>
 
