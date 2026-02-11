@@ -1,0 +1,66 @@
+type User @table {
+  username: String!
+  email: String!
+  preferredLanguage: String!
+  fullName: String
+  createdAt: Timestamp
+  lastLogin: Timestamp
+}
+
+type Sport @table {
+  nameEn: String!
+  nameEs: String!
+  descriptionEn: String
+  descriptionEs: String
+}
+
+type Team @table {
+  name: String!
+  sport: Sport!
+  city: String
+  logoUrl: String
+  createdAt: Timestamp
+}
+
+type Player @table {
+  firstName: String!
+  lastName: String!
+  team: Team!
+  jerseyNumber: Int
+  positionEn: String
+  positionEs: String
+  dateOfBirth: Date
+}
+
+type Game @table {
+  sport: Sport!
+  homeTeam: Team!
+  awayTeam: Team!
+  gameDate: Timestamp!
+  scoreHome: Int
+  scoreAway: Int
+  location: String
+  detailsEn: String
+  detailsEs: String
+}
+
+type PlayerStat @table {
+  player: Player!
+  game: Game!
+  statTypeEn: String!
+  statTypeEs: String!
+  value: Int64!
+  notesEn: String
+  notesEs: String
+}
+
+type TeamStat @table {
+  team: Team!
+  game: Game
+  statTypeEn: String!
+  statTypeEs: String!
+  value: Int64!
+  season: String
+  notesEn: String
+  notesEs: String
+}
