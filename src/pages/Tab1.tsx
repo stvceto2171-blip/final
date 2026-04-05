@@ -56,14 +56,14 @@ const SportList: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar className="tab1-toolbar">
           <IonTitle>Sport Details</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen>
         <IonHeader collapse="condense">
-          <IonToolbar>
+          <IonToolbar className="tab1-toolbar">
             <IonTitle size="large">Sport Details</IonTitle>
           </IonToolbar>
         </IonHeader>

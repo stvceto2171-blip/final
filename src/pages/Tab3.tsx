@@ -57,14 +57,14 @@ const Tab3: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar className="tab3-toolbar">
           <IonTitle>Deporte Information</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen>
         <IonHeader collapse="condense">
-          <IonToolbar>
+          <IonToolbar className="tab3-toolbar">
             <IonTitle size="large">Deporte Information</IonTitle>
           </IonToolbar>
         </IonHeader>

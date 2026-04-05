@@ -1,0 +1,15 @@
+/* Tab bar: Tab 1 blue, Tab 2 green, Tab 3 red */
+ion-tab-button.tab-bar-tab1 {
+  --color: rgba(37, 99, 235, 0.55);
+  --color-selected: #2563eb;
+}
+
+ion-tab-button.tab-bar-tab2 {
+  --color: rgba(22, 163, 74, 0.55);
+  --color-selected: #16a34a;
+}
+
+ion-tab-button.tab-bar-tab3 {
+  --color: rgba(220, 38, 38, 0.55);
+  --color-selected: #dc2626;
+}

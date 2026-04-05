@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonImg, IonActionSheet } from '@ionic/react';
 import { camera, trash, close } from 'ionicons/icons';
 import { usePhotoGallery, UserPhoto } from '../hooks/usePhotoGallery';
+import './Tab2.css';
 
 const Tab2: React.FC = () => {
   const { deletePhoto, photos, takePhoto } = usePhotoGallery();
@@ -10,13 +11,13 @@ const Tab2: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar className="tab2-toolbar">
           <IonTitle>Photo Gallery</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
       <IonHeader collapse="condense">
-          <IonToolbar>
+          <IonToolbar className="tab2-toolbar">
             <IonTitle size="large">Photo Gallery</IonTitle>
           </IonToolbar>
         </IonHeader>
