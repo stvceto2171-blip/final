@@ -39,6 +39,11 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
+    <nav className="app-top-nav" aria-label="App links">
+      <a className="nvidia-tic-tac-link" href="/nvidia-tic-tac-toe.html">
+        NVIDIA Tic Tac Toe
+      </a>
+    </nav>
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>

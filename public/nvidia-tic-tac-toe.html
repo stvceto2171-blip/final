@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVIDIA Developer Tic-Tac-Toe</title>
+    <style>
+        :root {
+            /* NVIDIA Blue & White Theme */
+            --x-color: #76B900; /* NVIDIA Green for X */
+            --o-color: #ffffff; /* White for O */
+            --bg-page: #000000; /* Black background */
+            --bg-cell: #1a3a76; /* NVIDIA Blue for cells */
+            --border-cell: #76B900; /* NVIDIA Green border */
+            --accent-btn: #76B900; /* NVIDIA Green for buttons */
+            --text-main: #ffffff; /* White text */
+            --text-status: #cccccc; /* Light grey for status */
+        }
+
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--bg-page);
+            color: var(--text-main);
+            padding: 20px;
+            margin: 0;
+        }
+
+        .top-nav { margin-bottom: 20px; display: flex; gap: 10px; }
+        .dasubot-link, .reset-btn {
+            text-decoration: none;
+            color: white;
+            background: var(--accent-btn);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(118, 185, 0, 0.3);
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .reset-btn {
+            background: #2f2f2f;
+            box-shadow: 0 4px 15px rgba(47, 47, 47, 0.3);
+        }
+        .dasubot-link:hover, .reset-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .status {
+            margin: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            height: 50px;
+            text-align: center;
+            max-width: 320px;
+            color: var(--text-main);
+        }
+        .status small {
+            font-size: 0.8rem;
+            color: var(--text-status);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-cell);
+            border: 2px solid var(--border-cell);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            border-radius: 12px;
+            position: relative;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            color: white;
+        }
+        .cell:not(.taken):not(.game-over):hover {
+            background: #2a4a86;
+            border-color: #99cc00;
+        }
+        .cell.taken { cursor: default; pointer-events: none; }
+        .cell.game-over {
+            cursor: pointer;
+            pointer-events: auto;
+            border-color: #76B900;
+            background: #0f2a4a;
+        }
+
+        .nvidia-name {
+            position: absolute;
+            bottom: 5px;
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            width: 90%;
+        }
+        .x { color: var(--x-color); }
+        .o { color: var(--o-color); }
+
+        .comment-section {
+            margin-top: 40px;
+            width: 100%;
+            max-width: 340px;
+            border-top: 2px solid var(--border-cell);
+            padding-top: 20px;
+        }
+        .form-control {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-cell);
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            font-family: sans-serif;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-btn);
+        }
+
+        .btn-success {
+            width: 100%;
+            background-color: #76B900;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-success:hover {
+            background-color: #99cc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <a href="/static/dasubot333.html" class="dasubot-link">GO TO DASUBOT333</a>
+        <button class="reset-btn" onclick="resetGame()">RESET GAME</button>
+    </div>
+
+    <div class="status" id="status">Your Turn (X)</div>
+
+    <div class="grid" id="board">
+        <div class="cell" data-index="0" data-url="https://developer.nvidia.com/ai"><span class="nvidia-name">AI Models & Frameworks</span></div>
+        <div class="cell" data-index="1" data-url="https://developer.nvidia.com/embedded-computing"><span class="nvidia-name">Embedded & Edge AI</span></div>
+        <div class="cell" data-index="2" data-url="https://developer.nvidia.com/vera-rubin"><span class="nvidia-name">Vera Rubin AI Pod</span></div>
+        <div class="cell" data-index="3" data-url="https://developer.nvidia.com/tsmc-vulnerabilities"><span class="nvidia-name">TSMC Security Vulnerabilities</span></div>
+        <div class="cell" data-index="4" data-url="https://developer.nvidia.com/cuda-zone"><span class="nvidia-name">CUDA & Parallel Computing</span></div>
+        <div class="cell" data-index="5" data-url="https://developer.nvidia.com/omniverse"><span class="nvidia-name">Omniverse Platform</span></div>
+        <div class="cell" data-index="6" data-url="https://developer.nvidia.com/drive"><span class="nvidia-name">DRIVE Autonomous Vehicles</span></div>
+        <div class="cell" data-index="7" data-url="https://developer.nvidia.com/isaac"><span class="nvidia-name">Isaac Robotics</span></div>
+        <div class="cell" data-index="8" data-url="https://developer.nvidia.com/jetson"><span class="nvidia-name">Jetson AI at the Edge</span></div>
+    </div>
+
+    <div class="comment-section">
+        <form action="/" method="POST">
+            <textarea name="contents" placeholder="THANK YOU FOR CONTACTING NVIDIA DEVELOPER. PLEASE LEAVE YOUR COMMENT..." class="form-control"></textarea>
+            <input type="submit" class="btn btn-success" value="Post comment">
+        </form>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const cells = document.querySelectorAll('.cell');
+        let board = Array(9).fill(null);
+        const human = 'X'; const ai = 'O';
+
+        function checkWinner(b) {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for (let combo of wins) {
+                if (b[combo[0]] && b[combo[0]] === b[combo[1]] && b[combo[0]] === b[combo[2]]) return b[combo[0]];
+            }
+            return b.includes(null) ? null : 'tie';
+        }
+
+        function minimax(newBoard, depth, isMaximizing) {
+            let result = checkWinner(newBoard);
+            if (result === ai) return 10 - depth;
+            if (result === human) return depth - 10;
+            if (result === 'tie') return 0;
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (!newBoard[i]) {
+                        newBoard[i] = ai;
+                        let score = minimax(newBoard, depth + 1, false);
+                        newBoard[i] = null;
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (!newBoard[i]) {
+                        newBoard[i] = human;
+                        let score = minimax(newBoard, depth + 1, true);
+                        newBoard[i] = null;
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+        function aiMove() {
+            let bestScore = -Infinity; let move;
+            for (let i = 0; i < 9; i++) {
+                if (!board[i]) {
+                    board[i] = ai;
+                    let score = minimax(board, 0, false);
+                    board[i] = null;
+                    if (score > bestScore) { bestScore = score; move = i; }
+                }
+            }
+            if (move !== undefined) makeMove(move, ai);
+        }
+
+        function makeMove(index, player) {
+            board[index] = player;
+            const cell = cells[index];
+            const span = document.createElement('span');
+            span.innerText = player; span.className = player.toLowerCase();
+            cell.appendChild(span); cell.classList.add('taken');
+
+            let result = checkWinner(board);
+            if (result) {
+                if (result === 'tie') {
+                    statusEl.innerHTML = "It's a Tie!<br><small>Click any cell to explore NVIDIA.</small>";
+                } else {
+                    const nvidiaName = cell.querySelector('.nvidia-name').innerText;
+                    statusEl.innerHTML = `${nvidiaName} Wins!<br><small>Click the green cell to visit.</small>`;
+                }
+                cells.forEach(c => {
+                    c.classList.add('game-over');
+                    c.onclick = () => window.open(c.dataset.url, '_blank');
+                });
+            } else if (player === human) {
+                statusEl.innerText = "Thinking..."; setTimeout(aiMove, 500);
+            } else { statusEl.innerText = "Your Turn (X)"; }
+        }
+
+        function resetGame() {
+            board = Array(9).fill(null);
+            statusEl.innerText = "Your Turn (X)";
+            cells.forEach(cell => {
+                cell.classList.remove('taken', 'game-over');
+                const existingSpan = cell.querySelector('span:not(.nvidia-name)');
+                if (existingSpan) cell.removeChild(existingSpan);
+                cell.onclick = null;
+            });
+        }
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', function() {
+                if (!board[this.dataset.index] && !checkWinner(board)) makeMove(this.dataset.index, human);
+            });
+        });
+    </script>
+</body>
+</html>
